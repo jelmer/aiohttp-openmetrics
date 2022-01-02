@@ -10,6 +10,7 @@ from prometheus_client import (
     Histogram,
     generate_latest,
     CONTENT_TYPE_LATEST,
+    REGISTRY,
 )
 
 request_counter = Counter(
