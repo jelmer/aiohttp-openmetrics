@@ -29,5 +29,5 @@ jobs:
     - name: Typing checks
       run: |
         pip install -U mypy
-        python -m mypy aiohttp_openspec
+        python -m mypy aiohttp_openmetrics
       if: "matrix.python-version != 'pypy3'"
