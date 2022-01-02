@@ -1,2 +1,3 @@
+- Tests!
 - Provide async push_to_gateway?
 - Drop use of prometheus_client?
