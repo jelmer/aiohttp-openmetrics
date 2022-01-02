@@ -21,7 +21,7 @@ Usage
 
   app = web.Application()
   app.middlewares.append(metrics_middlware)
-  app.router.add_route('GET', '/metrics', metrics),
+  app.router.add_get('/metrics', metrics)
 
   web.run_app(app)
 
