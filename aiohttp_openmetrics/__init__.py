@@ -1,3 +1,5 @@
+__version__ = (0, 0, 1)
+
 from aiohttp import web
 import asyncio
 import time
