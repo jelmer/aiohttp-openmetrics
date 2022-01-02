@@ -8,7 +8,7 @@ with open('README.rst', 'r') as f:
 setup(name="aiohttp-openmetrics",
       description="OpenMetrics provider for aiohttp",
       long_description=long_description,
-      version='0.0.1',
+      version='0.0.3',
       author="Jelmer Vernooij",
       author_email="jelmer@jelmer.uk",
       license="Apache v2 or later",
