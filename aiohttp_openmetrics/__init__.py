@@ -1,5 +1,16 @@
 __version__ = (0, 0, 1)
 
+__all__ = [
+    'metrics_middleware',
+    'metrics',
+    'setup_metrics',
+    'Counter',
+    'Gauge',
+    'Histogram',
+    'REGISTRY',
+    'run_prometheus_server',
+    ]
+
 from aiohttp import web
 import asyncio
 import time
