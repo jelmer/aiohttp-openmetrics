@@ -11,9 +11,6 @@ package.
 Example usage
 -------------
 
-Usage
------
-
 .. code-block:: python
 
   from aiohttp import web
