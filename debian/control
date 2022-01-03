@@ -7,3 +7,18 @@ Source: python-aiohttp-openmetrics
 Package: python3-aiohttp-openmetrics
 Depends: ${python3:Depends}
 Architecture: all
+Description: OpenMetrics provider for aiohttp
+ This project contains a simple middleware and /metrics route endpoint
+ for aiohttp that allow easy implementation of the openmetrics
+ protocol.
+ .
+ At the moment, this package is a thin wrapper around the
+ prometheus_client package.
+ .
+  from aiohttp import web from aiohttp_openmetrics import metrics,
+ metrics_middleware
+ .
+ app = web.Application() app.middlewares.append(metrics_middlware)
+ app.router.add_get('/metrics', metrics)
+ .
+ web.run_app(app)
