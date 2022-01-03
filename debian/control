@@ -1,0 +1,9 @@
+Rules-Requires-Root: no
+Standards-Version: 4.6.0.1
+Build-Depends: debhelper-compat (= 13), dh-sequence-python3, python3-all, python3-aiohttp, python3-prometheus-client
+Testsuite: autopkgtest-pkg-python
+Source: python-aiohttp-openmetrics
+
+Package: python3-aiohttp-openmetrics
+Depends: ${python3:Depends}
+Architecture: all

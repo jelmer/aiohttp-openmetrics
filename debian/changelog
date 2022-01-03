@@ -1,0 +1,5 @@
+python-aiohttp-openmetrics (0.0.3-1) UNRELEASED; urgency=low
+
+  * Initial release.
+
+ -- Jelmer Vernooĳ <jelmer@debian.org>  Mon, 03 Jan 2022 13:55:08 +0000
