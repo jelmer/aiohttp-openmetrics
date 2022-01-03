@@ -5,7 +5,7 @@ Testsuite: autopkgtest-pkg-python
 Source: python-aiohttp-openmetrics
 
 Package: python3-aiohttp-openmetrics
-Depends: ${python3:Depends}
+Depends: ${python3:Depends}, ${misc:Depends}
 Architecture: all
 Description: OpenMetrics provider for aiohttp
  This project contains a simple middleware and /metrics route endpoint
