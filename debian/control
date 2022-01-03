@@ -5,6 +5,7 @@ Testsuite: autopkgtest-pkg-python
 Source: python-aiohttp-openmetrics
 Priority: optional
 Section: python
+Maintainer: Jelmer Vernooĳ <jelmer@debian.org>
 
 Package: python3-aiohttp-openmetrics
 Depends: ${python3:Depends}, ${misc:Depends}
