@@ -104,9 +104,13 @@ def _escape_grouping_key(k, v):
         return k, quote_plus(v)
 
 
-async def push_to_gateway(gateway, job, registry, timeout=30):
+async def push_to_gateway(gateway, job, registry, timeout=30, grouping_key=None):
     (k, v) = _escape_grouping_key("job", job)
     url = URL(gateway) / "metrics" / k / v
+
+    for (k, v) in sorted((grouping_key or {}).items()):
+        (k, v) = _escape_grouping_key(k, v)
+        url = url / k / v
 
     data = generate_latest(registry)
 
