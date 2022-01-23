@@ -14,6 +14,7 @@ __all__ = [
 import asyncio
 import base64
 import time
+from typing import Optional, Dict
 from urllib.parse import quote_plus
 
 from aiohttp import web
@@ -47,14 +48,14 @@ request_exceptions = Counter(
     ["method", "route"])
 
 
-async def metrics(request):
+async def metrics(request: web.Request) -> web.Response:
     resp = web.Response(body=generate_latest())
     resp.content_type = CONTENT_TYPE_LATEST
     return resp
 
 
 @web.middleware
-async def metrics_middleware(request, handler):
+async def metrics_middleware(request: web.Request, handler) -> web.Response:
     start_time = time.time()
     route = request.match_info.route.name
     requests_in_progress_gauge.labels(request.method, route).inc()
@@ -73,14 +74,20 @@ async def metrics_middleware(request, handler):
     return response
 
 
-def setup_metrics(app):
-    """Setup middleware and install metrics on app."""
+def setup_metrics(app: web.Application):
+    """Setup middleware and install metrics on app.
+    """
     app.middlewares.insert(0, metrics_middleware)
     app.router.add_get("/metrics", metrics, name="metrics")
 
 
-async def run_prometheus_server(listen_addr, port):
-    """Run a web server with metrics only."""
+async def run_prometheus_server(listen_addr: str, port: int):
+    """Convenience function to run a web server with metrics only.
+
+    Args:
+      listen_addr: Address to listen on
+      port: Port to listen on
+    """
     app = web.Application()
     setup_metrics(app)
     runner = web.AppRunner(app)
@@ -104,7 +111,18 @@ def _escape_grouping_key(k, v):
         return k, quote_plus(v)
 
 
-async def push_to_gateway(gateway, job, registry, timeout=30, grouping_key=None):
+async def push_to_gateway(
+        gateway: str, job: str, registry, timeout: int = 30,
+        grouping_key: Optional[Dict[str, str]] = None):
+    """Push results to a pushgateway.
+
+    Args:
+      gateway: URL to the push gateway
+      job: Name of the exported job
+      registry: Registry to get variables from
+      timeout: Timeout in seconds
+      grouping_key: Dict with key/values to add
+    """
     (k, v) = _escape_grouping_key("job", job)
     url = URL(gateway) / "metrics" / k / v
 
