@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 
+import os
 from setuptools import setup
 
-with open('README.rst', 'r') as f:
+with open(os.path.join(os.path.dirname(__file__), 'README.rst'), 'r') as f:
     long_description = f.read()
 
 setup(name="aiohttp-openmetrics",
