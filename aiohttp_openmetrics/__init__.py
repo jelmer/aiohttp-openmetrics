@@ -34,6 +34,18 @@ request_counter = Counter(
     "requests_total", "Total Request Count", ["method", "route", "status"]
 )
 
+request_connection_reset_counter = Counter(
+    "requests_connection_reset_total",
+    "Total Number of Requests where the connection was reset",
+    ["method", "route"]
+)
+
+request_cancelled_counter = Counter(
+    "requests_cancelled_total",
+    "Total Number of Requests that were cancelled",
+    ["method", "route"]
+)
+
 request_latency_hist = Histogram(
     "request_latency_seconds", "Request latency", ["route"]
 )
@@ -61,7 +73,13 @@ async def metrics_middleware(request: web.Request, handler) -> web.Response:
     requests_in_progress_gauge.labels(request.method, route).inc()
     try:
         response = await handler(request)
-    except (asyncio.CancelledError, web.HTTPException, ConnectionResetError):
+    except web.HTTPException as e:
+        request_counter.labels(request.method, route, e.status_code).inc()
+    except ConnectionResetError:
+        request_connection_reset_counter.labels(request.method, route).inc()
+        raise
+    except asyncio.CancelledError:
+        request_cancelled_counter.labels(request.method, route).inc()
         raise
     except Exception:
         request_exceptions.labels(request.method, route).inc()
