@@ -9,7 +9,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.rst'), 'r') as f:
 setup(name="aiohttp-openmetrics",
       description="OpenMetrics provider for aiohttp",
       long_description=long_description,
-      version='0.0.5',
+      version='0.0.6',
       author="Jelmer Vernooij",
       author_email="jelmer@jelmer.uk",
       license="Apache v2 or later",
