@@ -75,6 +75,7 @@ async def metrics_middleware(request: web.Request, handler) -> web.Response:
         response = await handler(request)
     except web.HTTPException as e:
         request_counter.labels(request.method, route, e.status_code).inc()
+        raise
     except ConnectionResetError:
         request_connection_reset_counter.labels(request.method, route).inc()
         raise
