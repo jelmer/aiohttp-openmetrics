@@ -154,6 +154,6 @@ async def push_to_gateway(
     async with ClientSession() as session:
         async with session.put(
                 url, timeout=ClientTimeout(timeout),
-                content_type=CONTENT_TYPE_LATEST, data=data,
+                headers={'Content-Type': CONTENT_TYPE_LATEST}, data=data,
                 raise_for_status=True):
             pass
