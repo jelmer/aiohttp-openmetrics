@@ -21,12 +21,16 @@ from aiohttp import web
 from aiohttp.client import ClientSession, ClientTimeout
 from yarl import URL
 
-from prometheus_client import (
+from prometheus_client.metrics import (
     Counter,
     Gauge,
     Histogram,
+)
+from prometheus_client.exposition import (
     generate_latest,
     CONTENT_TYPE_LATEST,
+)
+from prometheus_client.registry import (
     REGISTRY,
 )
 
@@ -61,7 +65,7 @@ request_exceptions = Counter(
 
 
 async def metrics(request: web.Request) -> web.Response:
-    resp = web.Response(body=generate_latest())
+    resp = web.Response(body=generate_latest(registry=REGISTRY))
     resp.content_type = CONTENT_TYPE_LATEST
     return resp
 
