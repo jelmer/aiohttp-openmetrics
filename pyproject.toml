@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aiohttp-openmetrics"
+description = "OpenMetrics provider for aiohttp"
+readme = "README.rst"
+authors = [{name = "Jelmer Vernooĳ", email = "jelmer@jelmer.uk"}]
+license = {text = "Apache v2 or later"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Operating System :: POSIX",
+]
+dependencies = [
+    "aiohttp",
+    "prometheus_client",
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/jelmer/aiohttp-openmetrics/"
+Repository = "https://github.com/jelmer/aiohttp-openmetrics"
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.setuptools]
+packages = ["aiohttp_openmetrics"]
+include-package-data = false
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
+
+[tool.setuptools.dynamic]
+version = {attr = "aiohttp_openmetrics.__version__"}
+
+[tool.distutils.bdist_wheel]
+universal = 1
