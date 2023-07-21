@@ -41,6 +41,3 @@ include-package-data = false
 
 [tool.setuptools.dynamic]
 version = {attr = "aiohttp_openmetrics.__version__"}
-
-[tool.distutils.bdist_wheel]
-universal = 1
