@@ -3,7 +3,7 @@ aiohttp-openmetrics
 
 This project contains a simple middleware and /metrics route endpoint for
 aiohttp that allow easy implementation of the
-`openmetrics <https://www.openmetrics.org/>`_ protocol.
+`openmetrics <https://www.openmetrics.io/>`_ protocol.
 
 At the moment, this package is a thin wrapper around the ``prometheus_client``
 package.
