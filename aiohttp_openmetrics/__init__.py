@@ -1,15 +1,15 @@
 __version__ = (0, 0, 12)
 
 __all__ = [
-    'metrics_middleware',
-    'metrics',
-    'setup_metrics',
-    'Counter',
-    'Gauge',
-    'Histogram',
-    'REGISTRY',
-    'run_prometheus_server',
-    ]
+    "metrics_middleware",
+    "metrics",
+    "setup_metrics",
+    "Counter",
+    "Gauge",
+    "Histogram",
+    "REGISTRY",
+    "run_prometheus_server",
+]
 
 import asyncio
 import base64
@@ -41,13 +41,13 @@ request_counter = Counter(
 request_connection_reset_counter = Counter(
     "requests_connection_reset_total",
     "Total Number of Requests where the connection was reset",
-    ["method", "route"]
+    ["method", "route"],
 )
 
 request_cancelled_counter = Counter(
     "requests_cancelled_total",
     "Total Number of Requests that were cancelled",
-    ["method", "route"]
+    ["method", "route"],
 )
 
 request_latency_hist = Histogram(
@@ -55,13 +55,14 @@ request_latency_hist = Histogram(
 )
 
 requests_in_progress_gauge = Gauge(
-    "requests_in_progress_total", "Requests currently in progress",
-    ["method", "route"]
+    "requests_in_progress_total", "Requests currently in progress", ["method", "route"]
 )
 
 request_exceptions = Counter(
-    "request_exceptions_total", "Total Number of Exceptions during Requests",
-    ["method", "route"])
+    "request_exceptions_total",
+    "Total Number of Exceptions during Requests",
+    ["method", "route"],
+)
 
 
 async def metrics(request: web.Request) -> web.Response:
@@ -98,8 +99,7 @@ async def metrics_middleware(request: web.Request, handler) -> web.Response:
 
 
 def setup_metrics(app: web.Application):
-    """Setup middleware and install metrics on app.
-    """
+    """Setup middleware and install metrics on app."""
     app.middlewares.insert(0, metrics_middleware)
     app.router.add_get("/metrics", metrics, name="metrics")
 
@@ -125,18 +125,23 @@ def _escape_grouping_key(k, v):
     if v == "":
         # Per https://github.com/prometheus/pushgateway/pull/346.
         return k + "@base64", "="
-    elif '/' in v:
+    elif "/" in v:
         # Added in Pushgateway 0.9.0.
         return (
             k + "@base64",
-            base64.urlsafe_b64encode(v.encode("utf-8")).decode("utf-8"))
+            base64.urlsafe_b64encode(v.encode("utf-8")).decode("utf-8"),
+        )
     else:
         return k, quote_plus(v)
 
 
 async def push_to_gateway(
-        gateway: str, job: str, registry, timeout: int = 30,
-        grouping_key: Optional[Dict[str, str]] = None):
+    gateway: str,
+    job: str,
+    registry,
+    timeout: int = 30,
+    grouping_key: Optional[Dict[str, str]] = None,
+):
     """Push results to a pushgateway.
 
     Args:
@@ -149,7 +154,7 @@ async def push_to_gateway(
     (k, v) = _escape_grouping_key("job", job)
     url = URL(gateway) / "metrics" / k / v
 
-    for (k, v) in sorted((grouping_key or {}).items()):
+    for k, v in sorted((grouping_key or {}).items()):
         (k, v) = _escape_grouping_key(k, v)
         url = url / k / v
 
@@ -157,7 +162,10 @@ async def push_to_gateway(
 
     async with ClientSession() as session:
         async with session.put(
-                url, timeout=ClientTimeout(timeout),
-                headers={'Content-Type': CONTENT_TYPE_LATEST}, data=data,
-                raise_for_status=True):
+            url,
+            timeout=ClientTimeout(timeout),
+            headers={"Content-Type": CONTENT_TYPE_LATEST},
+            data=data,
+            raise_for_status=True,
+        ):
             pass
