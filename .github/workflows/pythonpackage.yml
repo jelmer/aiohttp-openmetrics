@@ -28,7 +28,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -U .
           pip install -U pip coverage codecov ruff
-          python setup.py develop
       - name: Style checks
         run: |
           python -m ruff check .
