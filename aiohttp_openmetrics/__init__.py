@@ -73,7 +73,7 @@ async def metrics(request: web.Request) -> web.Response:
 
 @web.middleware
 async def metrics_middleware(request: web.Request, handler) -> web.Response:
-    start_time = time.time()
+    start_time = time.monotonic()
     route = request.match_info.route.name
     requests_in_progress_gauge.labels(request.method, route).inc()
     try:
@@ -91,7 +91,7 @@ async def metrics_middleware(request: web.Request, handler) -> web.Response:
         request_exceptions.labels(request.method, route).inc()
         raise
     finally:
-        resp_time = time.time() - start_time
+        resp_time = time.monotonic() - start_time
         request_latency_hist.labels(route).observe(resp_time)
         requests_in_progress_gauge.labels(request.method, route).dec()
     request_counter.labels(request.method, route, response.status).inc()
