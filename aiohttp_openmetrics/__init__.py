@@ -14,7 +14,8 @@ __all__ = [
 import asyncio
 import base64
 import time
-from typing import Optional, Dict
+from collections.abc import Sequence
+from typing import Dict, Optional
 from urllib.parse import quote_plus
 
 from aiohttp import web
@@ -98,8 +99,29 @@ async def metrics_middleware(request: web.Request, handler) -> web.Response:
     return response
 
 
-def setup_metrics(app: web.Application):
-    """Setup middleware and install metrics on app."""
+def setup_metrics(
+    app: web.Application,
+    latency_buckets: Optional[Sequence[float]] = None,
+):
+    """Setup middleware and install metrics on app.
+
+    Args:
+      app: aiohttp application to install the middleware on
+      latency_buckets: Optional custom bucket boundaries for the request
+        latency histogram, in seconds. If provided, replaces the default
+        histogram buckets (see prometheus_client.Histogram for the default).
+        A trailing ``+Inf`` bucket is added automatically by
+        prometheus_client if not present.
+    """
+    if latency_buckets is not None:
+        global request_latency_hist
+        REGISTRY.unregister(request_latency_hist)
+        request_latency_hist = Histogram(
+            "request_latency_seconds",
+            "Request latency",
+            ["route"],
+            buckets=tuple(latency_buckets),
+        )
     app.middlewares.insert(0, metrics_middleware)
     app.router.add_get("/metrics", metrics, name="metrics")
 
