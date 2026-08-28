@@ -37,6 +37,23 @@ much faster) you can pass custom bucket boundaries to ``setup_metrics``:
   app = web.Application()
   setup_metrics(app, latency_buckets=[1, 5, 10, 30, 60, 120, 300, 600])
 
+Overriding the route label
+--------------------------
+
+By default, the ``route`` label used in the exported metrics is taken from the
+aiohttp route's ``name``. aiohttp enforces that route names are unique, which
+can be inconvenient if you want to group multiple routes under a single
+``route`` label. To override the label, set the ``_metric_name`` attribute on
+the handler:
+
+.. code-block:: python
+
+  async def handler(request):
+      ...
+
+  handler._metric_name = "my_route"
+  app.router.add_get("/somewhere", handler)
+
 License
 -------
 
