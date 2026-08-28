@@ -37,3 +37,6 @@ jobs:
         pip install -U mypy
         python -m mypy aiohttp_openmetrics
       if: "matrix.python-version != 'pypy3.11'"
+    - name: Tests
+      run: |
+        python -m unittest discover -s aiohttp_openmetrics/tests

@@ -73,7 +73,9 @@ async def metrics(request: web.Request) -> web.Response:
 @web.middleware
 async def metrics_middleware(request: web.Request, handler) -> web.Response:
     start_time = time.monotonic()
-    route = request.match_info.route.name
+    route = getattr(
+        request.match_info.handler, "_metric_name", request.match_info.route.name
+    )
     requests_in_progress_gauge.labels(request.method, route).inc()
     try:
         response = await handler(request)
