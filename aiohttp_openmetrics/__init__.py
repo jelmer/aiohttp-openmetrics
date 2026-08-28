@@ -1,39 +1,37 @@
 __version__ = (0, 0, 12)
 
 __all__ = [
-    "metrics_middleware",
-    "metrics",
-    "setup_metrics",
+    "REGISTRY",
     "Counter",
     "Gauge",
     "Histogram",
-    "REGISTRY",
+    "metrics",
+    "metrics_middleware",
     "run_prometheus_server",
+    "setup_metrics",
 ]
 
 import asyncio
 import base64
 import time
 from collections.abc import Sequence
-from typing import Dict, Optional
 from urllib.parse import quote_plus
 
 from aiohttp import web
 from aiohttp.client import ClientSession, ClientTimeout
-from yarl import URL
-
+from prometheus_client.exposition import (
+    CONTENT_TYPE_LATEST,
+    generate_latest,
+)
 from prometheus_client.metrics import (
     Counter,
     Gauge,
     Histogram,
 )
-from prometheus_client.exposition import (
-    generate_latest,
-    CONTENT_TYPE_LATEST,
-)
 from prometheus_client.registry import (
     REGISTRY,
 )
+from yarl import URL
 
 request_counter = Counter(
     "requests_total", "Total Request Count", ["method", "route", "status"]
@@ -101,7 +99,7 @@ async def metrics_middleware(request: web.Request, handler) -> web.Response:
 
 def setup_metrics(
     app: web.Application,
-    latency_buckets: Optional[Sequence[float]] = None,
+    latency_buckets: Sequence[float] | None = None,
 ):
     """Setup middleware and install metrics on app.
 
@@ -162,7 +160,7 @@ async def push_to_gateway(
     job: str,
     registry,
     timeout: int = 30,
-    grouping_key: Optional[Dict[str, str]] = None,
+    grouping_key: dict[str, str] | None = None,
 ):
     """Push results to a pushgateway.
 
@@ -182,12 +180,14 @@ async def push_to_gateway(
 
     data = generate_latest(registry)
 
-    async with ClientSession() as session:
-        async with session.put(
+    async with (
+        ClientSession() as session,
+        session.put(
             url,
             timeout=ClientTimeout(timeout),
             headers={"Content-Type": CONTENT_TYPE_LATEST},
             data=data,
             raise_for_status=True,
-        ):
-            pass
+        ),
+    ):
+        pass
